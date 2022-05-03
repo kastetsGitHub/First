@@ -3,16 +3,15 @@ using UnityEngine.Events;
 
 public class HouseGuard : MonoBehaviour
 {
-    public UnityEvent<AudioClip> InHouseEvent;
-    public UnityEvent OutHouseEvent;
-
+    [SerializeField] private UnityEvent<AudioClip> _startedAlarm;
+    [SerializeField] private UnityEvent _stoppedAlarm;
     [SerializeField] private AudioClip _signalinSound;
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.transform.TryGetComponent<Player>(out Player player))
         {
-            InHouseEvent?.Invoke(_signalinSound);
+            _startedAlarm?.Invoke(_signalinSound);
         }
     }
 
@@ -20,7 +19,9 @@ public class HouseGuard : MonoBehaviour
     {
         if (collision.transform.TryGetComponent<Player>(out Player player))
         {
-            OutHouseEvent?.Invoke();
+            _stoppedAlarm?.Invoke();
         }
     }
+
+    public AudioClip StartAlarm() => _signalinSound;
 }

@@ -8,12 +8,22 @@ public class AudioSystem : MonoBehaviour
 
     private Coroutine _coroutine;
     private bool _isPlay = true;
+    private float _maxVolume = 1f;
+    private float _minVolume = 0f;
+    private enum Volume
+    {
+        Up,
+        Down
+    }
 
     public void PlaySound(AudioClip clip)
     {
         if (_isPlay)
         {
-            _coroutine = StartCoroutine(TurnUpVolume(clip));
+            _soundSource.clip = clip; 
+            _soundSource.volume = _minVolume;
+            _soundSource.Play();
+            _coroutine = StartCoroutine(RegulateVolume(Volume.Up));
         }
     }
 
@@ -22,44 +32,40 @@ public class AudioSystem : MonoBehaviour
         if (_coroutine != null)
         {
             StopCoroutine(_coroutine);
-            StartCoroutine(TurnDownVolume());
         }
+        
+        StartCoroutine(RegulateVolume(Volume.Down));
     }
 
-    public void RegulationVolume(float volume)
-    {
-        _soundSource.volume = volume;
-    }
 
-    private IEnumerator TurnUpVolume(AudioClip clip)
+    private IEnumerator RegulateVolume(Volume volume)
     {
         _isPlay = false;
-        _soundSource.clip = clip;
-        _soundSource.volume = 0;
-        _soundSource.Play();
-        float maxVolume = 1f;
-        float currentTime = Time.time;
-        float totalTime = Time.time + _soundSource.clip.length;
+        float currentVolume;
 
-        while (currentTime < totalTime)
+        if (volume == Volume.Up)
         {
-            currentTime = Time.time;
-            _soundSource.volume = Mathf.MoveTowards(_soundSource.volume, maxVolume, _quicknessOfVolume * Time.deltaTime);
-            yield return null;
+            currentVolume = _maxVolume;
+            float currentTime = Time.time;
+            float totalTime = Time.time + _soundSource.clip.length;
+
+            while (currentTime < totalTime)
+            {
+                currentTime = Time.time;
+                _soundSource.volume = Mathf.MoveTowards(_soundSource.volume, currentVolume, _quicknessOfVolume * Time.deltaTime);
+                yield return null;
+            }
         }
 
-        _isPlay = true;        
-    }
-
-    private IEnumerator TurnDownVolume()
-    {
-        _isPlay = false;
-        float minVolume = 0f;
-
-        while (_soundSource.volume > minVolume)
+        else if (volume == Volume.Down)
         {
-            _soundSource.volume = Mathf.MoveTowards(_soundSource.volume, minVolume, _quicknessOfVolume * Time.deltaTime);
-            yield return null;
+            currentVolume = _minVolume;
+
+            while (_soundSource.volume > currentVolume)
+            {
+                _soundSource.volume = Mathf.MoveTowards(_soundSource.volume, currentVolume, _quicknessOfVolume * Time.deltaTime);
+                yield return null;
+            }
         }
 
         _isPlay = true;

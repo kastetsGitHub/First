@@ -12,11 +12,6 @@ public class Movement : MonoBehaviour
 
     private Rigidbody2D _rigidbody;
 
-    void Start()
-    {
-        _rigidbody = GetComponent<Rigidbody2D>();
-    }
-
     public void MoveForward() => transform.position += _speed * Time.deltaTime * transform.right;
 
     public void MoveBackward() => transform.position += _speed * Time.deltaTime * -transform.right;
@@ -27,6 +22,11 @@ public class Movement : MonoBehaviour
         {
             _rigidbody.velocity = Vector2.up * _forceOfJump;
         }
+    }
+
+    private void Start()
+    {
+        _rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private bool IsGrounded()

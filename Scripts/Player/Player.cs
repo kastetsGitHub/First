@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private Movement _movement;
     
-    void Update()
+    private void Update()
     {
         if (Input.GetKey(KeyCode.D))
         {
