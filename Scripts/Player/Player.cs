@@ -4,24 +4,23 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private MoveBehaviour _moveBehaviour;
-    [SerializeField] private JumpBehaviour _jumpBehaviour;
+    [SerializeField] private Movement _movement;
     
     void Update()
     {
         if (Input.GetKey(KeyCode.D))
         {
-            _moveBehaviour.MoveForward();
+            _movement.MoveForward();
         }
 
         else if (Input.GetKey(KeyCode.A))
         {
-            _moveBehaviour.MoveBackward();
+            _movement.MoveBackward();
         }
 
         if(Input.GetKeyDown(KeyCode.Space)) 
         {
-            _jumpBehaviour.Jump();
+            _movement.Jump();
         }
     }
 }

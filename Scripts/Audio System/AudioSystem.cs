@@ -5,22 +5,25 @@ public class AudioSystem : MonoBehaviour
 {
     [SerializeField] private AudioSource _soundSource;
     [SerializeField] private float _quicknessOfVolume;
-    private IEnumerator _coroutine;
+
+    private Coroutine _coroutine;
     private bool _isPlay = true;
 
     public void PlaySound(AudioClip clip)
     {
         if (_isPlay)
         {
-            _coroutine = TurnUpVolume(clip);
-            StartCoroutine(_coroutine);
+            _coroutine = StartCoroutine(TurnUpVolume(clip));
         }
     }
 
     public void StopSound()
     {
-        StopCoroutine(_coroutine);
-        StartCoroutine(TurnDownVolume());
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+            StartCoroutine(TurnDownVolume());
+        }
     }
 
     public void RegulationVolume(float volume)
